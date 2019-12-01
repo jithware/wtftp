@@ -1,0 +1,26 @@
+# Locate apr
+# This module defines
+# APR_LIBRARIES
+# APR_FOUND
+# APR_INCLUDE_DIR
+#
+
+FIND_PATH(APR_INCLUDE_DIR apr.h /usr/include/apr-1 /usr/include/apr-1.0 C:/msys64/usr/include/apr-1 C:/msys32/usr/include/apr-1)
+
+FIND_LIBRARY(APR_LIBRARIES NAMES apr-1 PATH /usr/lib C:/msys64/usr/lib C:/msys32/usr/lib) 
+
+IF (APR_INCLUDE_DIR AND APR_LIBRARIES)
+	SET(APR_FOUND TRUE)
+ENDIF (APR_INCLUDE_DIR AND APR_LIBRARIES)
+
+
+IF (APR_FOUND)
+	IF (NOT Apr_FIND_QUIETLY)
+		MESSAGE(STATUS "Found apr: ${APR_LIBRARIES}")
+	ENDIF (NOT Apr_FIND_QUIETLY)
+ELSE (APR_FOUND)
+	IF (Apr_FIND_REQUIRED)
+		MESSAGE(FATAL_ERROR "Could not find apr")
+	ENDIF (Apr_FIND_REQUIRED)
+ENDIF (APR_FOUND)
+

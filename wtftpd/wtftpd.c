@@ -206,7 +206,7 @@ void callback_capture(u_char *arg, const struct pcap_pkthdr *header, const u_cha
 	switch (wtftp->opcode)
 	{
 		int i;
-		apr_status_t match = APR_EGENERAL;
+		apr_status_t match;
 
 		case WTFTP_OPCODE_PING:
 
@@ -1639,204 +1639,36 @@ void wtftpd_struct()
 	printf("\n");
 }
 
-int	wtftpd_start(struct wtftpd_options_t *options)
+int callback_signal(int signum)
 {
-	_options = options;
+	printf("Received signal: %i\n", signum);
 
-	//options that do not need wtftp initialization and exit immediately
-
-	if (_options->help)
+	switch (signum)
 	{
-		usage();
-		return 0;
+		case SIGTERM:
+
+			return 1;
+
+		case SIGINT:
+
+			return 1;
+
+		#ifndef WIN32
+		case SIGTSTP:
+
+			return 0;
+
+		case SIGHUP:
+
+			return 0;
+
+		#endif
 	}
 
-	if (_options->version)
-	{
-		printf("%s %s\n\n", "wtftpd", WTFTP_VERSION);
-		return 0;
-	}
-
-	//interface is a required option
-	if (_options->interface == NULL)
-	{
-		fprintf(stderr, "No interface selected. Choose one of the following interfaces:\n\n");
-		wtftp_print_devices();
-		return -1;
-	}
-
-	uint8_t *bssid = NULL, *daddr = NULL;
-	int len = 0;
-
-	if (_options->bssid)
-	{
-		bssid = libnet_hex_aton(_options->bssid, &len);
-		if (len != IEEE80211_ADDR_LEN)
-		{
-			fprintf(stderr, "Invalid bssid: %s\n", _options->bssid);
-			return -1;
-		}
-	}
-
-	if (_options->daddr)
-	{
-		daddr = libnet_hex_aton(_options->daddr, &len);
-		if (len != IEEE80211_ADDR_LEN)
-		{
-			fprintf(stderr, "Invalid daddr: %s\n", _options->daddr);
-			return -1;
-		}
-	}
-
-	//perform wapi operations before initializing interface
-	#ifdef HAVE_WAPI
-	if (_options->monitor || _options->channel)
-	{
-		int ret, sock = wapi_make_socket();
-		wapi_set_ifdown(sock, _options->interface);
-		if (_options->monitor)
-		{
-			ret = wapi_set_mode(sock, _options->interface, WAPI_MODE_MONITOR);
-			if (ret < 0)
-			{
-				fprintf(stderr, "Could not set interface %s into monitor mode.\n", _options->interface);
-				return -1;
-			}
-		}
-		if (_options->channel)
-		{
-			double freq = 0.0;
-			int chan = atoi(_options->channel);
-			wapi_set_ifup(sock, _options->interface);
-			wapi_chan2freq(sock, _options->interface, chan, &freq);
-			ret = wapi_set_freq(sock, _options->interface, freq, WAPI_FREQ_FIXED);
-			if (ret < 0)
-			{
-				fprintf(stderr, "Could not put interface %s to channel %i.\n", _options->interface, chan);
-				return -1;
-			}
-		}
-		wapi_set_ifup(sock, _options->interface);
-	}
-	#endif
-
-	//wtftp initialization
-
-	if (wtftp_init_all(_options->interface, bssid, daddr, _options->capfile) == -1)
-	{
-		return -1;
-	}
-
-	//options that exit immediately after wtftp init
-
-	//generate a random uid
-	u_char *uid = malloc(WTFTP_UID_LEN);
-	wtftp_rand_uid(uid);
-
-	if (_options->randuid)
-	{
-		printf("%s\n", wtftp_tohex(uid, WTFTP_UID_LEN));
-		free(uid);
-		return 0;
-	}
-
-	const char *filter = NULL;
-	if (_options->filter)
-	{
-		filter = wtftp_get_filter();
-		printf("%s\n", filter);
-		return 0;
-	}
-
-	//options that continue after wtftp init
-
-	//get hardware address
-	const uint8_t *hwaddr = wtftp_get_hwaddr();
-	if (hwaddr == NULL)
-	{
-		fprintf(stderr, "Error getting hardware address for interface %s.\n", _options->interface);
-		return -1;
-	}
-
-	//apr init
-	apr_status_t rv;
-	rv = apr_initialize();
-	status(rv,TRUE);
-
-	//main memory pool
-	rv = apr_pool_create(&_pool, NULL);
-	status(rv,TRUE);
-
-	//mutex for threads
-	rv = apr_thread_mutex_create(&_mutex, APR_THREAD_MUTEX_DEFAULT, _pool);
-	status(rv,TRUE);
-	rv = apr_thread_mutex_create(&_mutex_stdout, APR_THREAD_MUTEX_DEFAULT, _pool);
-	status(rv,TRUE);
-
-	//hosts table
-	_hosts = apr_hash_make(_pool);
-
-	//queues
-	rv = apr_queue_create(&_putq, WTFTPD_QUEUE_SIZE, _pool);
-	status(rv,TRUE);
-
-	//initialize hosts table
-	_hosts = apr_hash_make(_pool);
-
-	//add me to the hosts
-	_me = add_host(hwaddr);
-	_me->source = _options->source;
-	_me->destination = _options->destination;
-
-	//main capture thread
-	rv = apr_thread_create(&_capture_thread, NULL, start_capture_thread, NULL, _pool);
-	status(rv,TRUE);
-
-	//search for hosts and display then exit after search seconds
-	if (_options->search)
-	{
-		u_int search = atoi(_options->search);
-
-		if (search > 0)
-		{
-			if (_me->source != NULL)
-			{
-				printf("Searching for files in %s...\n", _me->source);
-				get_source_dir(_me->source, _pool);
-			}
-
-			printf("Searching for files in hosts...\n");
-
-			ping(search);
-
-			print_host_text();
-		}
-
-		return 0;
-	}
-
-	//options that continue until application terminated
-
-	//use specified uid
-	if (_options->uid)
-	{
-		free(uid);
-		uid = libnet_hex_aton(_options->uid, &len);
-		if (len != WTFTP_UID_LEN)
-		{
-			fprintf(stderr, "Invalid uid: %s\n\n", _options->uid);
-			free(uid);
-			return -1;
-		}
-
-	}
-
-	uint8_t *addr = NULL;
-
-	return 1;
+	return 0;
 }
 
-/*int main(int argc, const char * const argv[])
+int main(int argc, const char * const argv[])
 {
 	apr_status_t rv;
 	apr_getopt_t *opt;
@@ -2315,4 +2147,4 @@ int	wtftpd_start(struct wtftpd_options_t *options)
 	apr_terminate();
 
 	return EXIT_SUCCESS;
-}*/
+}

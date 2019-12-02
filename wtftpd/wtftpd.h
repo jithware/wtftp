@@ -251,7 +251,6 @@ void				status				(apr_status_t rv, u_int quit);
 void 				usage				(void);
 
 void	wtftpd_struct	(void);
-int		wtftpd_start	(struct wtftpd_options_t *options);
 
 void	* APR_THREAD_FUNC 	start_capture_thread	(apr_thread_t *thread, void *data);
 void 	* APR_THREAD_FUNC 	start_destination_thread(apr_thread_t *thread, void *data);
@@ -262,5 +261,7 @@ void 	* APR_THREAD_FUNC 	start_put_thread		(apr_thread_t *thread, void *data);
 void 	* APR_THREAD_FUNC 	start_put_file_thread	(apr_thread_t *thread, void *data);
 void 	* APR_THREAD_FUNC	start_source_thread		(apr_thread_t *thread, void *data);
 void 	* APR_THREAD_FUNC	start_texting_thread	(apr_thread_t *thread, void *data);
+
+int 	callback_signal (int signum);
 
 #endif

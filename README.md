@@ -20,17 +20,17 @@ make
 
 ### Set capabilities on binary to allow network capture privileges (Linux)
 ```shell
-setcap cap_net_raw,cap_net_admin=eip ./wtftpd/wtftpd
+sudo setcap cap_net_raw,cap_net_admin=eip ./wtftpd/wtftpd
 ```
 
 ### Wireless configuration (Unix-like OS)
 ```shell
-INTERFACE=wlp0s19f2u4
-ifconfig $INTERFACE down
-iwconfig $INTERFACE mode monitor
-ifconfig $INTERFACE mtu 2304
-ifconfig $INTERFACE up
-iwconfig $INTERFACE channel 1
+INTERFACE=wlp0s18f2u1
+sudo ifconfig $INTERFACE down
+sudo iwconfig $INTERFACE mode monitor
+sudo ifconfig $INTERFACE mtu 2304
+sudo ifconfig $INTERFACE up
+sudo iwconfig $INTERFACE channel 1
 
 ```
 

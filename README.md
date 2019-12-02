@@ -42,7 +42,7 @@ sudo iwconfig $INTERFACE channel 1
 
 #### Text host with hardware address 00:12:17:9b:c3:3e
 ```shell
-./wtftpd/wtftpd --interface wlp0s19f2u4 --stdin --name myname --text 00:12:17:9b:c3:3e --prepend 
+./wtftpd/wtftpd --interface wlp0s19f2u4 --stdin --prepend myname --text 00:12:17:9b:c3:3e 
 ```
 
 #### Get all files from host with hardware address 00:12:17:9b:c3:3e

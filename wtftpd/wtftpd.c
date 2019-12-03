@@ -1646,7 +1646,7 @@ int callback_signal(int signum)
 	switch (signum)
 	{
 		case SIGTERM:
-
+			wtftp_close();
 			return 1;
 
 		case SIGINT:

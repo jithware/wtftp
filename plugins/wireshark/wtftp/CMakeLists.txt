@@ -24,12 +24,12 @@ set_source_files_properties(
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-register_plugin_files(plugin.c
+register_dissector_files(plugin.c
 	plugin
 	${DISSECTOR_SRC}
 )
 
-add_plugin_library(wtftp wtftp)
+add_plugin_library(wtftp)
 
 install(TARGETS wtftp
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${CPACK_PACKAGE_NAME}/plugins/${CPACK_PACKAGE_VERSION} NAMELINK_SKIP

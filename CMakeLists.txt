@@ -51,7 +51,7 @@ CONFIGURE_FILE(${WTFTP_SOURCE_DIR}/config.h.in ${WTFTP_SOURCE_DIR}/config.h)
 ADD_SUBDIRECTORY(lib)
 
 IF(APR_FOUND AND APRUTIL_FOUND)
-        MESSAGE("Building wtftpd daemon.")
+        MESSAGE("Building wtftpd executable.")
         IF(HAVE_NETINET_IN_H AND NETLINK_FOUND AND IWLIB_FOUND)
                 MESSAGE("Building wtftpd with wireless configuration.")
                 ADD_DEFINITIONS(-DHAVE_WAPI)

@@ -2,7 +2,7 @@
 The Wireless Trivial File Transfer Protocol (WTFTP) is a protocol for tranferring files wirelessly by broadcasting packets to all hosts listening in [monitor mode](https://en.wikipedia.org/wiki/Monitor_mode). There is no need to connect to a [wireless access point](https://en.wikipedia.org/wiki/Wireless_access_point).
 
 ### Build 
-To build the [wtftp](./lib/wtftp.c) library and [wtftpd](./wtftpd/wtftpd.c) executible
+To build the [wtftp](./lib/wtftp.c) library and [wtftpd](./wtftpd/wtftpd.c) executable
 #### Eclipse Development
 ```shell
 mkdir ./wtftp.build
@@ -39,7 +39,7 @@ If you can not set the wifi adapter to monitor mode, wtftpd will not work. If yo
 ./wtftpd/wtftpd --interface $INTERFACE --monitor --channel 1
 ```
 
-### Sample Usage
+### Usage
 #### Search for hosts
 On two diffferent hosts run:
 ```shell
@@ -160,4 +160,14 @@ On host 1 you will see:
 Hello from host 2!
 ```
 ### Wireshark Usage
-TODO: how to use wireshark dissector
+First build the wireshark dissector described in [README.md](./plugins/README.md). Run any of the commands above however now add a capture file flag:
+```shell
+./wtftpd/wtftpd --interface $INTERFACE --stdin --prepend host1 --text all --capfile /tmp/wtftpd/wtftpd.cap
+```
+After an iteraction between hosts, open the capture file with the custom wireshark build:
+```shell
+./run/wireshark /tmp/wtftpd/wtftpd.cap 
+```
+You can review the trace of how the WTFTP transpired with detail packet information. For example see the screenshot below:
+
+![wireshark](./images/wireshark.png)

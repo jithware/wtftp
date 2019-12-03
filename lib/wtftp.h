@@ -226,7 +226,6 @@ struct ieee80211_packet {
  * Request from a host the entire file with the given uid and starting block number
  *
 @verbatim
-@verbatim
  2 bytes         20 bytes             8 bytes
  -------------------------------------------------
 |REQFILE |         uid          |      block      |
@@ -334,6 +333,12 @@ int 			wtftp_capture(pcap_handler callback);
  * @return 			Returns -1 on error
  */
 int 			wtftp_capture_filter(pcap_t *handle, const char *filter);
+
+/**
+ * Close the network interface.
+ * @return 			Returns -1 on error
+ */
+int 			wtftp_close();
 
 /**
  * Dump the packet header and data to the file initialized in @c wtftp_init

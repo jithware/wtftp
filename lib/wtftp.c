@@ -131,6 +131,21 @@ int wtftp_capture_filter(pcap_t *handle, const char *filter)
 	return 0;
 }
 
+int wtftp_close()
+{
+	if (_pcap_dumper != NULL)
+	{
+		pcap_dump_close(_pcap_dumper);
+		_pcap_dumper = NULL;
+	}
+	if (_pcap != NULL)
+	{
+		pcap_breakloop(_pcap);
+	}
+	
+	return 0;
+}
+
 void wtftp_dump(const struct pcap_pkthdr *header, const u_char *packet)
 {
 	if (_pcap_dumper != NULL)

@@ -1641,7 +1641,7 @@ void wtftpd_struct()
 
 int callback_signal(int signum)
 {
-	printf("Received signal: %i\n", signum);
+	fprintf(stderr, "Received signal: %i\n", signum);
 
 	switch (signum)
 	{

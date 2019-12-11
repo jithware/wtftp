@@ -1,0 +1,1 @@
+libwtftp = static_library('wtftp', 'wtftp.c')

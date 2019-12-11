@@ -1,19 +1,22 @@
 # wtftp
 The Wireless Trivial File Transfer Protocol (WTFTP) is a protocol for tranferring files wirelessly by broadcasting packets to all hosts listening in [monitor mode](https://en.wikipedia.org/wiki/Monitor_mode). There is no need to connect to a [wireless access point](https://en.wikipedia.org/wiki/Wireless_access_point).
 
-### Build 
-To build the [wtftp](./lib/wtftp.c) library and [wtftpd](./wtftpd/wtftpd.c) executable
-#### Eclipse Development
+### Building with make
+To build the [wtftp](./lib/wtftp.c) library and [wtftpd](./wtftpd/wtftpd.c) executable first clone this repo and create a build directory:
 ```shell
+git clone https://github.com/jithware/wtftp.git
 mkdir ./wtftp.build
 cd ./wtftp.build
+```
+
+For eclipse development run:
+```shell
 cmake -G"Eclipse CDT4 - Unix Makefiles" -DCMAKE_ECLIPSE_GENERATE_SOURCE_PROJECT=TRUE -DCMAKE_BUILD_TYPE=Debug ../wtftp
 make
 ```
-#### Release
+
+For a release build run:
 ```shell
-mkdir ./wtftp.build
-cd ./wtftp.build
 cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ../wtftp
 make
 ```
@@ -24,8 +27,15 @@ sudo setcap cap_net_raw,cap_net_admin=eip ./wtftpd/wtftpd
 ```
 If you can not set the capabilities, you will have to execute wtftpd as root or administrator
 
+### Building with meson 
+Requires [meson](https://mesonbuild.com/Getting-meson.html) to be installed
+```shell
+meson build
+ninja -C build
+```
+
 ### Wireless configuration (Unix-like OS)
-Configure the wifi adapter for monitor mode:
+Configure the wifi adapter manually for monitor mode:
 ```shell
 INTERFACE=wlan0 # set to the 802.11 interface from iwconfig command
 sudo ifconfig $INTERFACE down
@@ -37,6 +47,11 @@ sudo iwconfig $INTERFACE channel 1
 If you can not set the wifi adapter to monitor mode, wtftpd will not work. If you compiled wtftpd with wifi configuration support (included wapi), you can run:
 ```shell
 ./wtftpd/wtftpd --interface $INTERFACE --monitor --channel 1
+```
+
+Or run the shell script:
+```shell
+./shl/wireless-config.sh wlan0 # set to the 802.11 interface from iwconfig command
 ```
 
 ### Usage

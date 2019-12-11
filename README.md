@@ -51,7 +51,7 @@ If you can not set the wifi adapter to monitor mode, wtftpd will not work. If yo
 
 Or run the shell script:
 ```shell
-./shl/wireless-config.sh wlan0 # set to the 802.11 interface from iwconfig command
+./shl/wireless-config.sh $INTERFACE 
 ```
 
 ### Usage

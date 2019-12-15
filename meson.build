@@ -1,4 +1,4 @@
-project('wtftp', 'c', version: '0.1.0.1', license : 'GPL2+')
+project('wtftp', 'c', 'cpp', version: '0.1.0.1', license : 'GPL2+')
 add_project_arguments('-DWTFTP_VERSION="' + meson.project_version() + '"', language : 'c')
 
 # libwtftp
@@ -29,3 +29,10 @@ else
     warning('Configured to build without wtftpd')
 endif 
 
+# wtftp-gui
+fltk_dep = dependency('FLTK', required : false)
+if fltk_dep.found() 
+    subdir('wtftp-gui')
+else
+    warning('Configured to build without wtftp-gui')
+endif

@@ -1,0 +1,17 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0305
+header_name {.h}
+code_name {.cxx}
+Function {make_window()} {open
+} {
+  Fl_Window {} {
+    label {wtftp-gui} selected
+    xywh {27 640 285 205} type Double visible
+  } {}
+}
+
+Function {} {open
+} {
+  code {Fl_Window* win = make_window();
+win->show();} {}
+}

@@ -2,12 +2,43 @@
 version 1.0305
 header_name {.h}
 code_name {.cxx}
+decl {\#include <iostream>} {public global
+}
+
 Function {make_window()} {open
 } {
-  Fl_Window {} {
-    label {wtftp-gui} selected
-    xywh {27 640 285 205} type Double visible
-  } {}
+  Fl_Window wtftp_window {
+    label {wtftp-gui}
+    callback callback_window_closing open
+    xywh {14 609 285 205} type Double visible
+  } {
+    Fl_Input user_input {
+      xywh {5 175 210 25}
+    }
+    Fl_Output received_text {
+      xywh {5 5 275 165}
+    }
+    Fl_Button {} {
+      label send
+      callback callback_button
+      xywh {220 175 60 25}
+    }
+  }
+}
+
+Function {callback_button( Fl_Widget* widg, void* userdata )} {open return_type {static void}
+} {
+  code {// TODO: send input via WTFTP
+std::cout << "button click\\n";
+char const* text = user_input->value();
+// received_text->value( text );} {selected
+  }
+}
+
+Function {callback_window_closing( Fl_Widget* widg, void* userdata )} {open return_type {static void}
+} {
+  code {std::cout << "Exiting the program\\n"; 
+wtftp_window->hide();} {}
 }
 
 Function {} {open

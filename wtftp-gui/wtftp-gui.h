@@ -3,6 +3,15 @@
 #ifndef wtftp_gui_h
 #define wtftp_gui_h
 #include <FL/Fl.H>
+#include <iostream>
 #include <FL/Fl_Double_Window.H>
+extern Fl_Double_Window *wtftp_window;
+#include <FL/Fl_Input.H>
+extern Fl_Input *user_input;
+#include <FL/Fl_Output.H>
+extern Fl_Output *received_text;
+#include <FL/Fl_Button.H>
 Fl_Double_Window* make_window();
+void callback_button( Fl_Widget* widg, void* userdata );
+void callback_window_closing( Fl_Widget* widg, void* userdata );
 #endif

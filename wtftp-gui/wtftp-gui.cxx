@@ -24,10 +24,22 @@ Fl_Double_Window* make_window() {
 }
 
 void callback_button( Fl_Widget* widg, void* userdata ) {
-  // TODO: send input via WTFTP
   std::cout << "button click\n";
   char const* text = user_input->value();
-  received_text->value( text );
+  // received_text->value( text );
+  
+  //initialize
+  if (wtftp_init("wlp0s19f2u4") == -1) // TODO: provide user input for interface
+  {
+  	std::cerr << "error occurred\n";
+  	return;
+  }
+  
+  //send ping to the world
+  wtftp_send_ping();
+  
+  //send out text from input
+  wtftp_send_text(text);
 }
 
 void callback_window_closing( Fl_Widget* widg, void* userdata ) {

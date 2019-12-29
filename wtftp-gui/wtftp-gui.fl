@@ -5,12 +5,24 @@ code_name {.cxx}
 decl {\#include <iostream>} {public global
 }
 
+decl {\#include <pcap.h>} {public global
+}
+
+decl {extern "C" int wtftp_init(const char *);} {public global
+}
+
+decl {extern "C" int wtftp_send_ping();} {public global
+}
+
+decl {extern "C" int wtftp_send_text(const char *);} {public global
+}
+
 Function {make_window()} {open
 } {
   Fl_Window wtftp_window {
     label {wtftp-gui}
     callback callback_window_closing open
-    xywh {14 609 285 205} type Double visible
+    xywh {5 592 285 205} type Double visible
   } {
     Fl_Input user_input {
       xywh {5 175 210 25}
@@ -28,11 +40,22 @@ Function {make_window()} {open
 
 Function {callback_button( Fl_Widget* widg, void* userdata )} {open return_type {static void}
 } {
-  code {// TODO: send input via WTFTP
-std::cout << "button click\\n";
+  code {std::cout << "button click\\n";
 char const* text = user_input->value();
-// received_text->value( text );} {selected
-  }
+// received_text->value( text );
+
+//initialize
+if (wtftp_init("wlp0s19f2u4") == -1) // TODO: provide user input for interface
+{
+	std::cerr << "error occurred\\n";
+	return;
+}
+
+//send ping to the world
+wtftp_send_ping();
+
+//send out text from input
+wtftp_send_text(text);} {}
 }
 
 Function {callback_window_closing( Fl_Widget* widg, void* userdata )} {open return_type {static void}

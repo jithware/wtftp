@@ -4,6 +4,10 @@
 #define wtftp_gui_h
 #include <FL/Fl.H>
 #include <iostream>
+#include <pcap.h>
+extern "C" int wtftp_init(const char *);
+extern "C" int wtftp_send_ping();
+extern "C" int wtftp_send_text(const char *);
 #include <FL/Fl_Double_Window.H>
 extern Fl_Double_Window *wtftp_window;
 #include <FL/Fl_Input.H>

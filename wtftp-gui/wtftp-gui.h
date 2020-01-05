@@ -4,6 +4,7 @@
 #define wtftp_gui_h
 #include <FL/Fl.H>
 #include <iostream>
+#include <string>
 #include <pcap.h>
 extern "C" int wtftp_init(const char *);
 extern "C" int wtftp_send_ping();
@@ -12,9 +13,9 @@ extern "C" int wtftp_send_text(const char *);
 extern Fl_Double_Window *wtftp_window;
 #include <FL/Fl_Input.H>
 extern Fl_Input *user_input;
-#include <FL/Fl_Output.H>
-extern Fl_Output *received_text;
 #include <FL/Fl_Button.H>
+#include <FL/Fl_Text_Display.H>
+extern Fl_Text_Display *text_display;
 Fl_Double_Window* make_window();
 void callback_button( Fl_Widget* widg, void* userdata );
 void callback_window_closing( Fl_Widget* widg, void* userdata );
